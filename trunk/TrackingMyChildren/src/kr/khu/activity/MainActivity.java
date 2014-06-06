@@ -1,23 +1,26 @@
 package kr.khu.activity;
 
+import kr.khu.views.LoginView;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * 
+ * @author QUOC NGUYEN
+ *
+ */
 public class MainActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -32,7 +35,6 @@ public class MainActivity extends ActionBarActivity implements
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -127,16 +129,31 @@ public class MainActivity extends ActionBarActivity implements
 		public PlaceholderFragment() {
 		}
 
+		@SuppressLint("CutPasteId")
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			textView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
+			int pagePos = getArguments().getInt(ARG_SECTION_NUMBER);
+			View rootView;
+			switch (pagePos) {
+			case 1:
+				rootView = new LoginView(getActivity());
+				return rootView;
+			case 2:
+				rootView = inflater.inflate(R.layout.fragment_main, container, false);
+				TextView textView1 = (TextView) rootView.findViewById(R.id.section_label);
+				textView1.setText("Message");
+				return rootView;
+			case 3:
+				rootView = inflater.inflate(R.layout.fragment_main, container, false);
+				TextView textView3 = (TextView) rootView.findViewById(R.id.section_label);
+				textView3.setText("Author");
+				return rootView;
+			default:
+				break;
+			}
+			
+			return null;
 		}
 
 		@Override
