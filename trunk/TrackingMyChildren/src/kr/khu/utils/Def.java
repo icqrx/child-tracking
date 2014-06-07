@@ -13,6 +13,7 @@ public class Def {
 	public static final String HTTP_METHOD_POST = "POST";
 	public static final String HTTP_METHOD_GET = "GET";
 	public final static String STATUS = "status";
+	public static final String CHILD_NAME = "CHILD_NAME";
 	
 	public static String JSON = "";
 	public static String LOGIN_API = "http://163.180.117.219/gps/tracker.php";

@@ -2,21 +2,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="20dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="20dp" >
+
+    <TextView
+        android:id="@+id/tv_child_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_child_name"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/edt_child_name"
+        android:text="Child1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/tv_child_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/enter_child_email"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/edt_child_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="child1@gmail.com"
+        android:ems="10" />
 
     <TextView
         android:id="@+id/tv_enter_parent_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:text="@string/enter_your_parent_code"
         android:textColor="@android:color/holo_blue_dark"
-        android:text="@string/enter_your_parent_code" />
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/edt_parent_code"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -26,10 +56,11 @@
     </EditText>
 
     <Button
-        android:layout_marginTop="20dp"
         android:id="@+id/btn_request_login"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
         android:text="@string/request" />
 
 </LinearLayout>

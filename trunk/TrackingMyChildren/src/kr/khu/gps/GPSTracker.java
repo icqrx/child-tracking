@@ -1,10 +1,10 @@
 package kr.khu.gps;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import kr.khu.utils.Def;
 import kr.khu.utils.HttpRequest;
+import kr.khu.views.LoginView;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -55,7 +55,7 @@ public class GPSTracker extends Service implements LocationListener {
 	    }
 	    
 	    /**
-	     * 
+	     * get location of user
 	     * @return
 	     */
 	    public Location getLocation() {
@@ -190,11 +190,11 @@ public class GPSTracker extends Service implements LocationListener {
 	public void onLocationChanged(Location location) {
 		Log.d("LoginView", "Your Location is - \nLat: " + latitude + "\nLong: " + longitude);  
 		// update location here
-		String child_id = "123";
+		String regChildID = "123";
 		
 		try {
 			String locationData;
-			locationData = URLEncoder.encode("child_id", "UTF-8") + "=" + URLEncoder.encode(child_id, "UTF-8");
+			locationData = URLEncoder.encode("reg_child_id", "UTF-8") + "=" + URLEncoder.encode(regChildID, "UTF-8");
 			locationData += "&" +  URLEncoder.encode("lat", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8");
 			locationData += "&" +  URLEncoder.encode("long", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(longitude), "UTF-8");
 			
