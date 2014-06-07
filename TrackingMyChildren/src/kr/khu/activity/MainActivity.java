@@ -142,12 +142,12 @@ public class MainActivity extends ActionBarActivity implements
 			case 2:
 				rootView = inflater.inflate(R.layout.fragment_main, container, false);
 				TextView textView1 = (TextView) rootView.findViewById(R.id.section_label);
-				textView1.setText("Message");
+				textView1.setText("Message of parent");
 				return rootView;
 			case 3:
 				rootView = inflater.inflate(R.layout.fragment_main, container, false);
 				TextView textView3 = (TextView) rootView.findViewById(R.id.section_label);
-				textView3.setText("Author");
+				textView3.setText("ICNS Team");
 				return rootView;
 			default:
 				break;
