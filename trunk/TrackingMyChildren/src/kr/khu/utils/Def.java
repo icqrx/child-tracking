@@ -15,6 +15,8 @@ public class Def {
 	public final static String STATUS = "status";
 	public static final String CHILD_NAME = "CHILD_NAME";
 	public static final String REGISTER_CHECKED = "REGISTER_CHECKED";
+	public static final String SENDER_ID = "828973880834";
+	public static final String REG_ID = "reg_child_id";
 	
 	public static String JSON = "";
 	public static String LOGIN_API = "http://163.180.117.212/app/admin/tracker.php";
