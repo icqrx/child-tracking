@@ -4,7 +4,7 @@ import java.net.URLEncoder;
 
 import kr.khu.utils.Def;
 import kr.khu.utils.HttpRequest;
-import kr.khu.views.LoginView;
+import kr.khu.utils.SharePreferenceData;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -38,7 +38,7 @@ public class GPSTracker extends Service implements LocationListener {
 	    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
 	 
 	    // The minimum time between updates in milliseconds
-	    private static final long MIN_TIME_BW_UPDATES = 50 * 60 * 1; // 1 minute
+	    private static final long MIN_TIME_BW_UPDATES = 500 * 60 * 1; // 1 minute
 
 		protected static final String TAG = GPSTracker.class.getSimpleName();
 	 
@@ -190,26 +190,31 @@ public class GPSTracker extends Service implements LocationListener {
 	public void onLocationChanged(Location location) {
 		Log.d("LoginView", "Your Location is - \nLat: " + latitude + "\nLong: " + longitude);  
 		// update location here
-		String regChildID = "123";
-		
-		try {
-			String locationData;
-			locationData = URLEncoder.encode("reg_child_id", "UTF-8") + "=" + URLEncoder.encode(regChildID, "UTF-8");
-			locationData += "&" +  URLEncoder.encode("lat", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8");
-			locationData += "&" +  URLEncoder.encode("long", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(longitude), "UTF-8");
-			
-			final String data = locationData;
-			new Thread(new Runnable() {
+		String regChildID = SharePreferenceData.getCheckedRegister(mContext);
+		if (regChildID.split(",")[0].equalsIgnoreCase("1")) {
+			final int numberRequest = 0;		
+			try {
+				String locationData;
+				locationData = URLEncoder.encode("reg_child_id", "UTF-8") + "=" + URLEncoder.encode(regChildID.split(",")[2].toString(), "UTF-8");
+				locationData += "&" +  URLEncoder.encode("lat", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8");
+				locationData += "&" +  URLEncoder.encode("long", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(longitude), "UTF-8");
 				
-				@Override
-				public void run() {
-					String response = HttpRequest.sendData(Def.HTTP_METHOD_POST, Def.LOCATION_API, data);
-					Log.d(TAG, "Response from server: " + response);
-				}
-			}).start();
-		} catch (Exception e) {
-			e.printStackTrace();
+				final String data = locationData;
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						String response = HttpRequest.sendData(Def.HTTP_METHOD_POST, Def.LOCATION_API, data);
+						Log.d(TAG, "Response from server: " + data);
+						Log.d(TAG, "Response from server: " + response);
+						Log.d(TAG, "Number request update: " + (numberRequest + 1));
+					} 
+				}).start();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+	
 		
 	}
 

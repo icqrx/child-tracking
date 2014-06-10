@@ -1,4 +1,4 @@
-package kr.khu.gps.push;
+package kr.khu.push;
 
 import java.io.IOException;
 import java.io.OutputStream;
