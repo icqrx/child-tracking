@@ -3,6 +3,8 @@ package kr.khu.views;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import com.google.android.gcm.GCMRegistrar;
+
 import kr.khu.activity.R;
 import kr.khu.gps.GPSTracker;
 import kr.khu.utils.Def;
@@ -67,6 +69,8 @@ public class LoginView extends LinearLayout {
 		}
 		
 		btnRequest.setOnClickListener(loginListener);
+		
+		
 	}
 
 	/**
@@ -80,12 +84,12 @@ public class LoginView extends LinearLayout {
 			childName = edtChildName.getText().toString();
 			// SharePreferenceData.saveChildName(getContext(), childName);
 			String childEmail = edtChildEmail.getText().toString();
-			// HttpRequest.request(Def.HTTP_LOGIN, Def.LOGIN_API,parentCode);
+			String regChildIF = SharePreferenceData.getRegID(getContext());
 			try {
 				String data = URLEncoder.encode("parent_code", "UTF-8") + "="
 						+ URLEncoder.encode(parentCode, "UTF-8");
 				data += "&" + URLEncoder.encode("reg_child_id", "UTF-8") + "="
-						+ URLEncoder.encode("123", "UTF-8");
+						+ URLEncoder.encode(regChildIF, "UTF-8");
 				data += "&" + URLEncoder.encode("child_name", "UTF-8") + "="
 						+ URLEncoder.encode(childName, "UTF-8");
 				data += "&" + URLEncoder.encode("child_email", "UTF-8") + "="

@@ -7,8 +7,8 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
-    
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />    
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- GCM connects to Internet Services. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -20,10 +20,10 @@
 
     <!-- Creates a custom permission so only this app can receive its messages. -->
     <permission
-        android:name="com.androidexample.gcm.permission.C2D_MESSAGE"
+        android:name="kr.khu.activity.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.androidexample.gcm.permission.C2D_MESSAGE" />
+    <uses-permission android:name="kr.khu.activity.permission.C2D_MESSAGE" />
 
     <!-- This app has permission to register and receive data message. -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -33,12 +33,16 @@
 
     <!-- Permission to vibrate -->
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
-        android:name="kr.khu.push.Controller"
         android:allowBackup="true"
         android:icon="@drawable/tracking_index"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name="kr.khu.activity.MainActivity"
             android:label="@string/app_name" >
@@ -48,6 +52,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -58,10 +63,11 @@
                 <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.androidexample.gcm" />
+                <category android:name="kr.khu.push" />
             </intent-filter>
         </receiver>
-         <service android:name="kr.khu.push.GCMIntentService" />
+
+        <service android:name="kr.khu.push.GCMIntentService" />
     </application>
 
 </manifest>
