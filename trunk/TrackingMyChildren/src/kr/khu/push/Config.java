@@ -1,4 +1,4 @@
-package kr.khu.gps.push;
+package kr.khu.push;
 
 public interface Config {
 

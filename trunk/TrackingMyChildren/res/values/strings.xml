@@ -11,6 +11,7 @@
     <string name="action_settings">Settings</string>
     <string name="enter_your_parent_code">Enter your parent code</string>
     <string name="enter_child_name">Child Name</string>
+    <string name="enter_parent_name">""</string>
     <string name="enter_child_email">Email</string>
     <string name="request">Request</string>
     <string name="hello_world">Hello world!</string>

@@ -1,4 +1,4 @@
-package kr.khu.gps.push;
+package kr.khu.push;
 
 import kr.khu.activity.R;
 import android.app.Notification;

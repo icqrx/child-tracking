@@ -1,5 +1,6 @@
 package kr.khu.activity;
 
+import kr.khu.push.Controller;
 import kr.khu.views.LoginView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -23,7 +24,7 @@ import android.widget.TextView;
  */
 public class MainActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
-
+	private Controller aController;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -45,8 +46,23 @@ public class MainActivity extends ActionBarActivity implements
 		mTitle = getTitle();
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
+		
+		// Register client reg id to GCM
+		// Get Global Controller Class object (see application tag in
+		// AndroidManifest.xml)
+		//aController = (Controller) getApplicationContext();
+
+		// Check if Internet present
+		//if (!aController.isConnectingToInternet()) {
+
+		//	// Internet Connection is not present
+		//	aController.showAlertDialog(MainActivity.this,
+		//			"Internet Connection Error",
+		//			"Please connect to Internet connection", false);
+		//	// stop executing code by return
+		//	return;
+		//}
 	}
 
 	@Override
