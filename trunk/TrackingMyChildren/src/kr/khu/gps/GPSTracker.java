@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -49,7 +48,6 @@ public class GPSTracker extends Service implements LocationListener {
 	    // Declaring a Location Manager
 	    protected LocationManager locationManager;
 
-		private Handler mHandler;
 	    
 	    /**
 	     * 
@@ -61,7 +59,6 @@ public class GPSTracker extends Service implements LocationListener {
 	    }
 	    @Override
 	    public void onCreate() {
-	    	mHandler = new Handler();
 	    	super.onCreate();
 	    }
 	    /**
@@ -196,34 +193,6 @@ public class GPSTracker extends Service implements LocationListener {
 	        // Showing Alert Message
 	        alertDialog.show();
 	    }
-	    /**
-	     * 
-	     * @author QUOC NGUYEN
-	     *
-	     */
-	    private class ToastMess extends AsyncTask<String, String, String> {
-		String toastMessage;
-		@Override
-		protected String doInBackground(String... params) {
-			toastMessage = params[0];
-			return toastMessage;
-		}
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-		}
-		@Override
-		protected void onPostExecute(String result) {
-			Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-		}
-		@Override
-		protected void onProgressUpdate(String... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-		}
-		
-	}
 	@Override
 	public void onLocationChanged(Location location) {
 		//Log.d(TAG, "Your Location is - \nLat: " + latitude + "\nLong: " + longitude);  
