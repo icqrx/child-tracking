@@ -2,12 +2,15 @@ package kr.khu.activity;
 
 import java.io.IOException;
 
+import kr.khu.push.Controller;
 import kr.khu.utils.Def;
 import kr.khu.utils.SharePreferenceData;
 import kr.khu.views.LoginView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -25,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -40,12 +44,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	private Context context;
-	public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
 	private GoogleCloudMessaging gcm;
 	private String regid;
-	
+	public static Context mContext;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -58,12 +61,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	public Controller aController;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mContext = getApplicationContext();
 		setContentView(R.layout.activity_main);
-
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
@@ -85,8 +89,28 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
+       
 	}
 	
+	/**
+	 * mHandleMessageReceiver
+	 */
+	private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				 String newMessage = intent.getExtras().getString(Def.EXTRA_MESSAGE);
+		         Log.d(TAG, "MESSAGE: " + newMessage);
+		 		// Waking up mobile if it is sleeping
+					aController.acquireWakeLock(getApplicationContext());
+					
+					// Display message on the screen
+					Toast.makeText(getApplicationContext(), "Got Message: " + newMessage, Toast.LENGTH_LONG).show();
+					
+					// Releasing wake lock
+					aController.releaseWakeLock();
+			}
+	};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void registerInBackground() {
 		new AsyncTask() {
@@ -98,6 +122,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	                if (gcm == null) {
 	                    gcm = GoogleCloudMessaging.getInstance(context);
 	                }
+	                //register to reciever message from gcm
+	                //registerReceiver(mHandleMessageReceiver, new IntentFilter(Def.DISPLAY_MESSAGE_ACTION));
 	                regid = gcm.register(Def.SENDER_ID);
 	                msg = "Device registered, registration ID=" + regid;
 
