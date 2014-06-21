@@ -13,10 +13,14 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 public class GPSTracker extends Service implements LocationListener {
 	 private final Context mContext;
@@ -33,17 +37,19 @@ public class GPSTracker extends Service implements LocationListener {
 	    Location location; // location
 	    double latitude; // latitude
 	    double longitude; // longitude
-	 
+	    int numberRequest = 0;
 	    // The minimum distance to change Updates in meters
 	    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
 	 
 	    // The minimum time between updates in milliseconds
-	    private static final long MIN_TIME_BW_UPDATES = 500 * 60 * 1; // 1 minute
+	    private static final long MIN_TIME_BW_UPDATES = 50 * 60 * 1; // 1 minute
 
 		protected static final String TAG = GPSTracker.class.getSimpleName();
 	 
 	    // Declaring a Location Manager
 	    protected LocationManager locationManager;
+
+		private Handler mHandler;
 	    
 	    /**
 	     * 
@@ -53,7 +59,11 @@ public class GPSTracker extends Service implements LocationListener {
 	        this.mContext = context;
 	        getLocation();
 	    }
-	    
+	    @Override
+	    public void onCreate() {
+	    	mHandler = new Handler();
+	    	super.onCreate();
+	    }
 	    /**
 	     * get location of user
 	     * @return
@@ -186,35 +196,78 @@ public class GPSTracker extends Service implements LocationListener {
 	        // Showing Alert Message
 	        alertDialog.show();
 	    }
+	    /**
+	     * 
+	     * @author QUOC NGUYEN
+	     *
+	     */
+	    private class ToastMess extends AsyncTask<String, String, String> {
+		String toastMessage;
+		@Override
+		protected String doInBackground(String... params) {
+			toastMessage = params[0];
+			return toastMessage;
+		}
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+		}
+		@Override
+		protected void onProgressUpdate(String... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+		}
+		
+	}
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.d("LoginView", "Your Location is - \nLat: " + latitude + "\nLong: " + longitude);  
+		//Log.d(TAG, "Your Location is - \nLat: " + latitude + "\nLong: " + longitude);  
 		// update location here
 		String regChildID = SharePreferenceData.getCheckedRegister(mContext);
-		if (regChildID.split(",")[0].equalsIgnoreCase("1")) {
-			final int numberRequest = 0;		
-			try {
-				String locationData;
-				locationData = URLEncoder.encode("reg_child_id", "UTF-8") + "=" + URLEncoder.encode(regChildID.split(",")[2].toString(), "UTF-8");
-				locationData += "&" +  URLEncoder.encode("lat", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8");
-				locationData += "&" +  URLEncoder.encode("long", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(longitude), "UTF-8");
-				
-				final String data = locationData;
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						String response = HttpRequest.sendData(Def.HTTP_METHOD_POST, Def.LOCATION_API, data);
-						Log.d(TAG, "Response from server: " + data);
-						Log.d(TAG, "Response from server: " + response);
-						Log.d(TAG, "Number request update: " + (numberRequest + 1));
-					} 
-				}).start();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	
+			if ( regChildID.split(",")[0].equalsIgnoreCase("1")) {
+						
+				try {
+					String locationData;
+					String regID = regChildID.split(",")[2];
+					locationData = URLEncoder.encode("reg_child_id", "UTF-8") + "=" + URLEncoder.encode(regID.substring(0, regID.length()-1), "UTF-8");
+					locationData += "&" +  URLEncoder.encode("lat", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8");
+					locationData += "&" +  URLEncoder.encode("long", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(longitude), "UTF-8");
+					numberRequest = numberRequest +1;
+					final String data = locationData;
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							String response = HttpRequest.sendData(Def.HTTP_METHOD_POST, Def.LOCATION_API, data);
+							if (response != null) {
+								//Log.d(TAG, "Response from server: " + data);
+								Log.d(TAG, "Response from server: " + response);
+								Log.d(TAG, "Number request update: " + numberRequest);
+								if(response.equalsIgnoreCase("comeback\n")) {
+									new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+							            @Override
+							            public void run() {
+							            	Toast.makeText(mContext, "Alert! Far away more than 200m, plz come back to the lab!", Toast.LENGTH_SHORT).show();
+							            }
+							        });
+								}
+							}else {
+								Log.d(TAG, "Number request update: " + "No response from server");
+							}
+						} 
+					}).start();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			
+		}
 		
 	}
 

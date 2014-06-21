@@ -1,9 +1,8 @@
 package kr.khu.views;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
-
-import com.google.android.gcm.GCMRegistrar;
 
 import kr.khu.activity.R;
 import kr.khu.gps.GPSTracker;
@@ -41,7 +40,7 @@ public class LoginView extends LinearLayout {
 	private Button btnRequest;
 	private GPSTracker gps;
 	public static String childName = "";
-
+	
 	public LoginView(Context context) {
 		super(context);
 		LayoutInflater inflate = LayoutInflater.from(getContext());
@@ -65,6 +64,8 @@ public class LoginView extends LinearLayout {
 		
 		if(!checked.equalsIgnoreCase("0")) {
 			showControl();
+			// CAll GPS again when recall app
+			createGPS(getContext());
 			txtParentName.setText("Your parent name: " + checked.split(",")[1].toString());
 		}
 		
@@ -84,12 +85,12 @@ public class LoginView extends LinearLayout {
 			childName = edtChildName.getText().toString();
 			// SharePreferenceData.saveChildName(getContext(), childName);
 			String childEmail = edtChildEmail.getText().toString();
-			String regChildIF = SharePreferenceData.getRegID(getContext());
+			String regChildID = SharePreferenceData.getRegID(getContext());
 			try {
 				String data = URLEncoder.encode("parent_code", "UTF-8") + "="
 						+ URLEncoder.encode(parentCode, "UTF-8");
 				data += "&" + URLEncoder.encode("reg_child_id", "UTF-8") + "="
-						+ URLEncoder.encode(regChildIF, "UTF-8");
+						+ URLEncoder.encode(regChildID, "UTF-8");
 				data += "&" + URLEncoder.encode("child_name", "UTF-8") + "="
 						+ URLEncoder.encode(childName, "UTF-8");
 				data += "&" + URLEncoder.encode("child_email", "UTF-8") + "="
@@ -101,19 +102,7 @@ public class LoginView extends LinearLayout {
 				// request to server
 				new AsyncTaskRequest(getContext()).execute(requestData);
 
-				gps = new GPSTracker(getContext());
-				// check if GPS enabled
-				if (gps.canGetLocation()) {
-
-					//double latitude = gps.getLatitude();
-					//double longitude = gps.getLongitude();
-					//Toast.makeText(getContext(),"Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-				} else {
-					// can't get location
-					// GPS or Network is not enabled
-					// Ask user to enable GPS/network in settings
-					gps.showSettingsAlert();
-				}
+			
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -153,32 +142,51 @@ public class LoginView extends LinearLayout {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if (response.equalsIgnoreCase("0\n")) {
-				alertDialog.setMessage("Parent doesn't exits.");
-				alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						return;
-					}
-				});
-				alertDialog.show();
-				if (dialog.isShowing()) {
-		            dialog.dismiss();
-		        }
-			} else {
-				//response="1,parent_name,regi_child_id"
-				SharePreferenceData.saveCheckRegister(mContext,"1" + "," + response.split(",")[1] + "," + response.split(",")[2]);
-			    if (dialog.isShowing()) {
-		            dialog.dismiss();
-		        }
-			    showControl();
-			    txtParentName.setText("Your parent name: " + response.split(",")[1].toString());
+				if (response.equalsIgnoreCase("0\n")) {
+					alertDialog.setMessage("Parent doesn't exits.");
+					alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							return;
+						}
+					});
+					alertDialog.show();
+					if (dialog.isShowing()) {
+			            dialog.dismiss();
+			        }
+				} else {
+					//response="1,parent_name,regi_child_id"
+					SharePreferenceData.saveCheckRegister(mContext,"1" + "," + response.split(",")[1] + "," + response.split(",")[2]);
+				    if (dialog.isShowing()) {
+			            dialog.dismiss();
+			        }
+				    showControl();
+				    txtParentName.setText("Your parent name: " + response.split(",")[1].toString());
+				    
+				    createGPS(mContext);
+				}
 			}
-		}
-
 	}
 	
+	/**
+	 * 
+	 */
+	public void createGPS(Context mContext) {
+		gps = new GPSTracker(mContext);
+		// check if GPS enabled
+		if (gps.canGetLocation()) {
+
+			//double latitude = gps.getLatitude();
+			//double longitude = gps.getLongitude();
+			//Toast.makeText(getContext(),"Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+		} else {
+			// can't get location
+			// GPS or Network is not enabled
+			// Ask user to enable GPS/network in settings
+			gps.showSettingsAlert();
+		}
+	}
 	/**
 	 * 
 	 * @param response
