@@ -1,21 +1,9 @@
 package kr.khu.push;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
-import java.util.Map.Entry;
 
 import kr.khu.activity.R;
 import kr.khu.utils.Def;
-
-import com.google.android.gcm.GCMRegistrar; 
-
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -24,7 +12,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.PowerManager;
-import android.util.Log;
 
 public class Controller extends Application{
 	

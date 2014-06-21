@@ -1,7 +1,6 @@
 package kr.khu.views;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import kr.khu.activity.R;
