@@ -2,7 +2,7 @@ package kr.khu.activity;
 
 import java.io.IOException;
 
-import kr.khu.push.Controller;
+import kr.khu.push.GCMIntentService;
 import kr.khu.utils.Def;
 import kr.khu.utils.SharePreferenceData;
 import kr.khu.views.LoginView;
@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -28,7 +29,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -49,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	private GoogleCloudMessaging gcm;
 	private String regid;
 	public static Context mContext;
+	private UpdateUI updateUI_Reciever;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -61,7 +62,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-	public Controller aController;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,27 +90,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
        
+        // register update ui reciever
+        IntentFilter filter = new IntentFilter(UpdateUI.PROCESS_UPDATE_UI);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        updateUI_Reciever = new UpdateUI();
+        registerReceiver(updateUI_Reciever, filter);
 	}
-	
-	/**
-	 * mHandleMessageReceiver
-	 */
-	private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				 String newMessage = intent.getExtras().getString(Def.EXTRA_MESSAGE);
-		         Log.d(TAG, "MESSAGE: " + newMessage);
-		 		// Waking up mobile if it is sleeping
-					aController.acquireWakeLock(getApplicationContext());
-					
-					// Display message on the screen
-					Toast.makeText(getApplicationContext(), "Got Message: " + newMessage, Toast.LENGTH_LONG).show();
-					
-					// Releasing wake lock
-					aController.releaseWakeLock();
-			}
-	};
+	@Override
+	protected void onDestroy() {
+		this.unregisterReceiver(updateUI_Reciever);
+		super.onDestroy();
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void registerInBackground() {
 		new AsyncTask() {
@@ -346,6 +336,16 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 			((MainActivity) activity).onSectionAttached(getArguments().getInt(
 					ARG_SECTION_NUMBER));
 		}
+	}
+	// broadcast reciever to update ui
+	public class UpdateUI extends BroadcastReceiver {
+		public static final String PROCESS_UPDATE_UI = "khu.kr.intent.action.PROCESS_UPDATE_UI";
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String message = intent.getStringExtra(GCMIntentService.GCM_MESSAGE);
+			Log.d(TAG, message);
+		}
+		
 	}
 
 }
