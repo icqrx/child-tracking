@@ -22,7 +22,6 @@
         android:name="kr.khu.activity.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="kr.khu.activity.permission.C2D_MESSAGE" />
 
     <!-- This app has permission to register and receive data message. -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -53,21 +52,19 @@
         </activity>
 
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name="kr.khu.push.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
-				
-                <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
                 <category android:name="kr.khu.activity" />
             </intent-filter>
         </receiver>
 
-       <!--  <service android:name="kr.khu.push.GCMIntentService" /> -->
-        <service android:name="kr.khu.push.GPSTracker" ></service>
+        <service android:name="kr.khu.push.GCMIntentService" />
+        <service android:name="kr.khu.gps.GPSTracker" >
+        </service>
     </application>
 
 </manifest>
