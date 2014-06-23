@@ -52,8 +52,8 @@ public class LoginView extends LinearLayout {
 		
 		
 		edtParentCode = (EditText) findViewById(R.id.edt_parent_code);
-		edtChildName = (EditText) findViewById(R.id.edt_child_name);
 		edtChildEmail = (EditText) findViewById(R.id.edt_child_email);
+		edtChildName = (EditText) findViewById(R.id.edt_child_name);
 		btnRequest = (Button) findViewById(R.id.btn_request_login);
 
 		// check the child has already signed

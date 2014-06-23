@@ -23,7 +23,7 @@ public class Def {
 	public static final String EXTRA_MESSAGE = "message";
 	
 	public static String JSON = "";
-	public static String LOGIN_API = "http://163.180.117.219/admin/tracker.php";
-	public static String LOCATION_API = "http://163.180.117.219/admin/update_location.php";
+	public static String LOGIN_API = "http://163.180.117.212/app/admin/tracker.php";
+	public static String LOCATION_API = "http://163.180.117.212/app/admin/update_location.php";
 
 }
