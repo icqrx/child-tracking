@@ -228,7 +228,6 @@ public class GPSTracker extends Service implements LocationListener {
 
 							            @Override
 							            public void run() {
-							            	//Toast.makeText(mContext, "Alert! Far away more than 200m, plz come back to the lab!", Toast.LENGTH_SHORT).show();
 							            	generateNotification(mContext,"Alert! Far away more than 200m, plz come back to the lab!");
 							            }
 							        });

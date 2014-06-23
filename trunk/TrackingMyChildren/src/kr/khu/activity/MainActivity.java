@@ -6,6 +6,7 @@ import kr.khu.push.GCMIntentService;
 import kr.khu.utils.Def;
 import kr.khu.utils.SharePreferenceData;
 import kr.khu.views.LoginView;
+import kr.khu.views.MessageView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -50,6 +51,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	private String regid;
 	public static Context mContext;
 	private UpdateUI updateUI_Reciever;
+	private static MessageView messageView;
+	private static String messageReviever;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -227,10 +230,16 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getSupportFragmentManager();
+//		Fragment fragment = null;
+//		Bundle args = new Bundle();
+//		args.putString("message", messageReviever);
+//		
+//		fragment = PlaceholderFragment.newInstance(position + 1);
+//		fragment.setArguments(args);
+		
 		fragmentManager
 				.beginTransaction()
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
+				.replace(R.id.container,PlaceholderFragment.newInstance(position + 1)).commit();
 	}
 
 	public void onSectionAttached(int number) {
@@ -314,14 +323,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 				rootView = new LoginView(getActivity());
 				return rootView;
 			case 2:
-				rootView = inflater.inflate(R.layout.fragment_main, container, false);
-				TextView textView1 = (TextView) rootView.findViewById(R.id.section_label);
-				textView1.setText("Message of parent");
-				return rootView;
+				messageView = new MessageView(getActivity());
+//				Bundle arg = getArguments();
+//				String mess  = arg.getString("message");
+//				if(mess!=null)
+//					messageView.setMessageData(mess);
+				return messageView;
 			case 3:
 				rootView = inflater.inflate(R.layout.fragment_main, container, false);
 				TextView textView3 = (TextView) rootView.findViewById(R.id.section_label);
 				textView3.setText("ICNS Team");
+				
 				return rootView;
 			default:
 				break;
@@ -340,10 +352,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 	// broadcast reciever to update ui
 	public class UpdateUI extends BroadcastReceiver {
 		public static final String PROCESS_UPDATE_UI = "khu.kr.intent.action.PROCESS_UPDATE_UI";
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			String message = intent.getStringExtra(GCMIntentService.GCM_MESSAGE);
-			Log.d(TAG, message);
+			messageReviever = intent.getStringExtra(GCMIntentService.GCM_MESSAGE);
+			Log.d(TAG, messageReviever);
+			Bundle arg = new Bundle();
+			if(messageReviever != null) {
+				arg.putString("message", messageReviever);
+			}
 		}
 		
 	}
